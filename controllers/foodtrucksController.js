@@ -3,7 +3,7 @@
  */
 var mongoose = require('mongoose');
 var con = mongoose.connection;
-con.onerror
+var connectionString = 'mongodb://proj:123456@ds053944.mongolab.com:53944/projetao';
 
 var ftSchema = new mongoose.Schema({
     user: {
@@ -26,7 +26,7 @@ var FoodTruck = mongoose.model('FoodTruck', ftSchema);
 
 module.exports = {
     registerFoodTruck: function (req, res) {
-        mongoose.connect('mongodb://proj:123456@ds053944.mongolab.com:53944/projetao');
+        mongoose.connect(connectionString);
 
         var ft = new FoodTruck({
             user: req.user,
@@ -40,6 +40,7 @@ module.exports = {
         });
         ft.save(function (err) {
             if (err) throw err;
+
             console.log("Foodtruck cadastrado com sucesso");
             res.sendStatus(200);
             mongoose.disconnect();
@@ -47,10 +48,17 @@ module.exports = {
 
     },
     findAllFoodTrucks: function (res) {
-        mongoose.connect('mongodb://proj:123456@ds053944.mongolab.com:53944/projetao');
+        mongoose.connect(connectionString);
         FoodTruck.find({}, function (err, docs) {
-            res.json(docs);
-            mongoose.disconnect();
+            if(err) throw err;
+            if(docs.length > 0 ){
+                res.status(200);
+                res.json(docs);
+                console.log("Todos os Foodtrucks foram retornados.")
+                mongoose.disconnect();
+            }else
+                res.sendStatus(404);
+
         });
     }
 };
