@@ -5,11 +5,11 @@ var dbInstance = require('../Mongo/mongoConnection.js');
 var mongoose = dbInstance.db;
 
 var ftSchema = new mongoose.Schema({
-    userId: String,
-    ownerName: String,
-    cnpj: String,
-    email: String,
-    businessName: String,
+    userId: { type: String, required: true},
+    ownerName: { type: String, required: true},
+    cnpj: { type: String, required: true},
+    email: { type: String, required: true},
+    businessName: { type: String, required: true},
     prefersEvent: Boolean,
     prefersPlace: Boolean,
     area: {
@@ -25,7 +25,7 @@ module.exports = {
     registerFoodTruck: function (req, res, next) {
 
         var ft = new FoodTruck({
-            user: req.body.user,
+            userId: req.body.username,
             ownerName: req.body.ownerName,
             cnpj: req.body.cnpj,
             email: req.body.email,
@@ -38,8 +38,7 @@ module.exports = {
             if (err) throw err;
 
             console.log("Foodtruck cadastrado com sucesso");
-            res.sendStatus(200);
-            next();
+            res.sendStatus(200);;
         });
 
     },

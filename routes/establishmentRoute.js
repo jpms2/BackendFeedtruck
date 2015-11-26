@@ -4,7 +4,7 @@ var userContoller = require('../controllers/usersController');
 var establishmentController = require('../controllers/establishmentController');
 var auth = require('../authentication/basicAuth');
 
-router.get('/',auth.basicAuth);
+router.get('/',auth.basicAuth, establishmentController.findAll);
 
 router.post('/', userContoller.registerUser, establishmentController.registerEstablishment);
 
