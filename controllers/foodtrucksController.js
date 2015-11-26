@@ -1,15 +1,11 @@
 /**
  * Created by Filipe Nogueira on 13/11/2015.
  */
-var mongoose = require('mongoose');
-var con = mongoose.connection;
-var connectionString = 'mongodb://proj:123456@ds053944.mongolab.com:53944/projetao';
+var dbInstance = require('../Mongo/mongoConnection.js');
+var mongoose = dbInstance.db;
 
 var ftSchema = new mongoose.Schema({
-    user: {
-        username: String,
-        password: String,
-    },
+    userId: String,
     ownerName: String,
     cnpj: String,
     email: String,
@@ -24,38 +20,36 @@ var ftSchema = new mongoose.Schema({
 
 var FoodTruck = mongoose.model('FoodTruck', ftSchema);
 
+
 module.exports = {
-    registerFoodTruck: function (req, res) {
-        mongoose.connect(connectionString);
+    registerFoodTruck: function (req, res, next) {
 
         var ft = new FoodTruck({
-            user: req.user,
-            ownerName: req.ownerName,
-            cnpj: req.cnpj,
-            email: req.email,
-            businessName: req.businessName,
-            prefersEvent: req.prefersEvent,
-            prefersPlace: req.prefersPlace,
-            area: req.area
+            user: req.body.user,
+            ownerName: req.body.ownerName,
+            cnpj: req.body.cnpj,
+            email: req.body.email,
+            businessName: req.body.businessName,
+            prefersEvent: req.body.prefersEvent,
+            prefersPlace: req.body.prefersPlace,
+            area: req.body.area
         });
         ft.save(function (err) {
             if (err) throw err;
 
             console.log("Foodtruck cadastrado com sucesso");
             res.sendStatus(200);
-            mongoose.disconnect();
+            next();
         });
 
     },
-    findAllFoodTrucks: function (res) {
-        mongoose.connect(connectionString);
+    findAllFoodTrucks: function (req,res,next) {
         FoodTruck.find({}, function (err, docs) {
             if(err) throw err;
             if(docs.length > 0 ){
                 res.status(200);
                 res.json(docs);
                 console.log("Todos os Foodtrucks foram retornados.")
-                mongoose.disconnect();
             }else
                 res.sendStatus(404);
 
