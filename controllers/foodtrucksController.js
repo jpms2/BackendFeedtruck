@@ -42,6 +42,18 @@ module.exports = {
         });
 
     },
+    updateFoodTruck: function(req,res,next) {
+        FoodTruck.findOneAndUpdate({userId: req.body.username},req.body,{upsert:false},function(err, numberAffected, raw){
+           if(err)
+                console.error(err);
+           else{
+               console.log(numberAffected,raw);
+               res.sendStatus(200);
+               next();
+           }
+
+        });
+    },
     findAllFoodTrucks: function (req,res,next) {
         FoodTruck.find({}, function (err, docs) {
             if(err) throw err;

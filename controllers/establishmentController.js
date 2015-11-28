@@ -33,6 +33,18 @@ module.exports = {
                 res.sendStatus(404);
         });
     },
+    updateEstablishment: function(req,res,next) {
+        Establishment.findOneAndUpdate({userId: req.body.username},req.body,{upsert:false},function(err, numberAffected, raw){
+            if(err)
+                console.error(err);
+            else{
+                console.log(numberAffected,raw);
+                res.sendStatus(200);
+                next();
+            }
+
+        });
+    },
     registerEstablishment : function (req, res, next) {
 
         var establishment = new Establishment({

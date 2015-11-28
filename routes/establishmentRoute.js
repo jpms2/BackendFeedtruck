@@ -8,4 +8,6 @@ router.get('/',auth.basicAuth, establishmentController.findAll);
 
 router.post('/', userContoller.registerUser, establishmentController.registerEstablishment);
 
+router.put('/',auth.basicAuth,establishmentController.updateEstablishment);
+
 module.exports = router;
