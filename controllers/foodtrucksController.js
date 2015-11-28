@@ -2,14 +2,15 @@
  * Created by Filipe Nogueira on 13/11/2015.
  */
 var dbInstance = require('../Mongo/mongoConnection.js');
+var user = require('../controllers/usersController');
 var mongoose = dbInstance.db;
 
 var ftSchema = new mongoose.Schema({
     userId: { type: String, required: true},
-    ownerName: { type: String, required: true},
-    cnpj: { type: String, required: true},
-    email: { type: String, required: true},
-    businessName: { type: String, required: true},
+    ownerName: { type: String, required: 'Owner name is required'},
+    cnpj: { type: String, required: 'CNPJ is required'},
+    email: { type: String, required: 'Email is required'},
+    businessName: { type: String, required: 'Business name is required'},
     prefersEvent: Boolean,
     prefersPlace: Boolean,
     area: {
@@ -35,10 +36,14 @@ module.exports = {
             area: req.body.area
         });
         ft.save(function (err) {
-            if (err) throw err;
-
-            console.log("Foodtruck cadastrado com sucesso");
-            res.sendStatus(200);;
+            if (err){
+                console.error(err);
+                user.removeUser((req.body.username));
+                res.json(err.message);
+            }else{
+                console.log("Foodtruck cadastrado com sucesso");
+                res.sendStatus(200);
+            }
         });
 
     },
@@ -55,7 +60,7 @@ module.exports = {
         });
     },
     findAllFoodTrucks: function (req,res,next) {
-        FoodTruck.find({}, function (err, docs) {
+        FoodTruck.find({},{_id:0, userId:0,__v:0}, function (err, docs) {
             if(err) throw err;
             if(docs.length > 0 ){
                 res.status(200);

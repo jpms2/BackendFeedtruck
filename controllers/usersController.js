@@ -39,5 +39,14 @@ module.exports = {
             else
                 done(null,false);
         });
+    },
+    removeUser: function(username){
+        User.findOneAndRemove({username: username}, function(err){
+            if(err){
+                console.error(err);
+            }else{
+                console.log("Usuario removido");
+            }
+        });
     }
 }

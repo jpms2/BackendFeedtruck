@@ -7,14 +7,15 @@ var mongoose = dbInstance.db;
 
 var establishmentSchema = new mongoose.Schema({
     userId: { type: String, required: true},
-    ownerName: { type: String, required: true},
-    cnpj: { type: String, required: true},
-    email: { type: String, required: true},
-    businessName: { type: String, required: true},
+    ownerName: { type: String, required: 'Owner name is required'},
+    cnpj: { type: String, required: 'CNPJ is required'},
+    email: { type: String, required: 'Email is required'},
+    businessName: { type: String, required: 'Business name is required'},
     area: {
         x: Number,
         y: Number
-    }
+    },
+    cep: {type:String, required:true}
 });
 
 
@@ -23,7 +24,7 @@ var Establishment = mongoose.model('Establishment', establishmentSchema);
 
 module.exports = {
     findAll:function(req,res,next){
-        Establishment.find({},function(err,docs){
+        Establishment.find({},{_id:0, userId:0,__v:0},function(err,docs){
             if(err) throw err;
             if(docs.length > 0 ){
                 res.status(200);
@@ -53,7 +54,8 @@ module.exports = {
             cnpj: req.body.cnpj,
             email: req.body.email,
             businessName: req.body.businessName,
-            area: req.body.area
+            area: req.body.area,
+            cep: req.body.cep
         });
         establishment.save(function (err) {
             if (err){

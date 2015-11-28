@@ -2,7 +2,7 @@ var express = require('express');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
-
+var config = require('./Mongo/config');
 var foodtrucks = require('./routes/foodtruckRoute');
 var establishment = require('./routes/establishmentRoute');
 var app = express();
@@ -11,7 +11,7 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(passport.initialize());
-var port = process.env.PORT || 8080;
+var port = config.port;
 
 var router = express.Router();
 router.use(bodyParser.json());
