@@ -4,12 +4,13 @@
 var dbInstance = require('../Mongo/mongoConnection.js');
 var user = require('../controllers/usersController');
 var mongoose = dbInstance.db;
+var common = require('../common/common');
 
 var ftSchema = new mongoose.Schema({
-    userId: { type: String, required: true},
     ownerName: { type: String, required: 'Owner name is required'},
     cnpj: { type: String, required: 'CNPJ is required'},
     email: { type: String, required: 'Email is required'},
+    address: common.address,
     businessName: { type: String, required: 'Business name is required'},
     prefersEvent: Boolean,
     prefersPlace: Boolean,
@@ -26,14 +27,14 @@ module.exports = {
     registerFoodTruck: function (req, res, next) {
 
         var ft = new FoodTruck({
-            userId: req.body.username,
             ownerName: req.body.ownerName,
             cnpj: req.body.cnpj,
             email: req.body.email,
             businessName: req.body.businessName,
             prefersEvent: req.body.prefersEvent,
             prefersPlace: req.body.prefersPlace,
-            area: req.body.area
+            area: req.body.area,
+            address: req.body.address
         });
         ft.save(function (err) {
             if (err){
@@ -48,7 +49,7 @@ module.exports = {
 
     },
     updateFoodTruck: function(req,res,next) {
-        FoodTruck.findOneAndUpdate({userId: req.body.username},req.body,{upsert:false},function(err, numberAffected, raw){
+        FoodTruck.findOneAndUpdate({email: req.body.email},req.body,{upsert:false},function(err, numberAffected, raw){
            if(err)
                 console.error(err);
            else{
@@ -60,6 +61,7 @@ module.exports = {
         });
     },
     findAllFoodTrucks: function (req,res,next) {
+        console.log(req.user);
         FoodTruck.find({},{_id:0, userId:0,__v:0}, function (err, docs) {
             if(err) throw err;
             if(docs.length > 0 ){
@@ -70,5 +72,12 @@ module.exports = {
                 res.sendStatus(404);
 
         });
+    },
+    getSpecific: function (req,res,next) {
+        FoodTruck.findOne({'email':req.user.email},{_id:0, __v:0},function(err,user){
+            if(err) console.error(err);
+            var result = {logged: user, type: 'Foodtruck'};
+            res.send(result);
+        })
     }
 };

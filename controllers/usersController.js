@@ -6,7 +6,7 @@ var mongoose = dbInstance.db;
 
 
 var userSchema = new mongoose.Schema({
-    username: { type: String, required: true, unique: true},
+    email: { type: String, required: true, unique: true},
     password: { type: String, required: true, },
     category: {type: String, required: true, enum: ['Foodtruck', 'Establishment']}
 });
@@ -17,7 +17,7 @@ module.exports = {
     registerUser: function (req, res, next) {
 
         var user = new User({
-            username: req.body.username,
+            email: req.body.email,
             password: req.body.password,
             category : req.body.category
         });
@@ -33,20 +33,31 @@ module.exports = {
 
     },
     validateUserLogin : function(username, password, done){
-        User.find({ 'username' : username.valueOf(), 'password': password.valueOf()}, function(err,user){
-            if(user.length === 1)
-                done(null, user);
-            else
-                done(null,false);
-        });
+
+            User.findOne({ 'email' : username.valueOf(), 'password': password.valueOf()}, function(err,user){
+                if(user === undefined)
+                    done(null, false);
+                else
+                    done(null,user);
+            });
+
     },
-    removeUser: function(username){
-        User.findOneAndRemove({username: username}, function(err){
+    removeUser: function(email){
+        User.findOneAndRemove({email: email}, function(err){
             if(err){
                 console.error(err);
             }else{
                 console.log("Usuario removido");
             }
         });
+    },
+    serialize : function(user,done){
+        done(null,user.id);
+    },
+    deserialize: function(id,done){
+        User.findById(id,function(err,user){
+           done(err,user);
+        });
+
     }
 }

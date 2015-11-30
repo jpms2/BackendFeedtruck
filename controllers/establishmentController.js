@@ -3,10 +3,9 @@
  */
 var dbInstance = require('../Mongo/mongoConnection.js');
 var mongoose = dbInstance.db;
-
+var common = require('../common/common');
 
 var establishmentSchema = new mongoose.Schema({
-    userId: { type: String, required: true},
     ownerName: { type: String, required: 'Owner name is required'},
     cnpj: { type: String, required: 'CNPJ is required'},
     email: { type: String, required: 'Email is required'},
@@ -15,7 +14,7 @@ var establishmentSchema = new mongoose.Schema({
         x: Number,
         y: Number
     },
-    cep: {type:String, required:true}
+    address: common.address
 });
 
 
@@ -35,7 +34,7 @@ module.exports = {
         });
     },
     updateEstablishment: function(req,res,next) {
-        Establishment.findOneAndUpdate({userId: req.body.username},req.body,{upsert:false},function(err, numberAffected, raw){
+        Establishment.findOneAndUpdate({username: req.body.username},req.body,{upsert:false},function(err, numberAffected, raw){
             if(err)
                 console.error(err);
             else{
@@ -49,13 +48,12 @@ module.exports = {
     registerEstablishment : function (req, res, next) {
 
         var establishment = new Establishment({
-            user: req.body.user,
             ownerName: req.body.ownerName,
             cnpj: req.body.cnpj,
             email: req.body.email,
             businessName: req.body.businessName,
             area: req.body.area,
-            cep: req.body.cep
+            address: req.body.address
         });
         establishment.save(function (err) {
             if (err){
@@ -68,5 +66,12 @@ module.exports = {
             next();
         });
 
+    },
+    getSpecific: function (req,res,next) {
+        Establishment.findOne({'email':req.user.email},{_id:0, userId:0,__v:0},function(err,user){
+            if(err) console.error(err);
+            var result = {logged: user, type: 'Establishment'};
+            res.send(result);
+        })
     }
 };
