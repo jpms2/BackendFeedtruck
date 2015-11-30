@@ -12,7 +12,7 @@ var estController  = require ('../controllers/establishmentController');
 
 var auth = require('../authentication/basicAuth');
 
-router.post('/',auth.basicAuth, function(req,res,next){
+router.get('/',auth.basicAuth, function(req,res,next){
     if(req.user.category === 'Foodtruck')
         ftController.getSpecific(req,res,next);
     else if(req.user.category === 'Establishment')

@@ -12,6 +12,8 @@ var ftSchema = new mongoose.Schema({
     email: { type: String, required: 'Email is required'},
     address: common.address,
     businessName: { type: String, required: 'Business name is required'},
+    type: { type: String, required: 'type is required'},
+    vehicle: { type: String, required: 'vehicle is required'},
     prefersEvent: Boolean,
     prefersPlace: Boolean,
     area: {
@@ -34,7 +36,9 @@ module.exports = {
             prefersEvent: req.body.prefersEvent,
             prefersPlace: req.body.prefersPlace,
             area: req.body.area,
-            address: req.body.address
+            address: req.body.address,
+            type: req.body.type,
+            vehicle: req.body.vehicle
         });
         ft.save(function (err) {
             if (err){
@@ -49,7 +53,7 @@ module.exports = {
 
     },
     updateFoodTruck: function(req,res,next) {
-        FoodTruck.findOneAndUpdate({email: req.body.email},req.body,{upsert:false},function(err, numberAffected, raw){
+        FoodTruck.findOneAndUpdate({email: req.user.email},req.body,{upsert:false},function(err, numberAffected, raw){
            if(err)
                 console.error(err);
            else{
@@ -57,7 +61,6 @@ module.exports = {
                res.sendStatus(200);
                next();
            }
-
         });
     },
     findAllFoodTrucks: function (req,res,next) {

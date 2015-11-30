@@ -10,6 +10,8 @@ var establishmentSchema = new mongoose.Schema({
     cnpj: { type: String, required: 'CNPJ is required'},
     email: { type: String, required: 'Email is required'},
     businessName: { type: String, required: 'Business name is required'},
+    prefersInstant: Boolean,
+    prefersNegociate: Boolean,
     area: {
         x: Number,
         y: Number
@@ -34,7 +36,7 @@ module.exports = {
         });
     },
     updateEstablishment: function(req,res,next) {
-        Establishment.findOneAndUpdate({username: req.body.username},req.body,{upsert:false},function(err, numberAffected, raw){
+        Establishment.findOneAndUpdate({username: req.user.username},req.body,{upsert:false},function(err, numberAffected, raw){
             if(err)
                 console.error(err);
             else{
@@ -53,7 +55,9 @@ module.exports = {
             email: req.body.email,
             businessName: req.body.businessName,
             area: req.body.area,
-            address: req.body.address
+            address: req.body.address,
+            prefersInstant: req.body.prefersInstant,
+            prefersNegociate: req.body.prefersNegociate
         });
         establishment.save(function (err) {
             if (err){
