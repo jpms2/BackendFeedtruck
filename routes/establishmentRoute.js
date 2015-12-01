@@ -6,6 +6,6 @@ var auth = require('../authentication/basicAuth');
 
 router.get('/',auth.basicAuth, establishmentController.findAll);
 
-router.put('/',auth.basicAuth,establishmentController.updateEstablishment);
+router.post('/',auth.basicAuth,establishmentController.updateEstablishment);
 
 module.exports = router;

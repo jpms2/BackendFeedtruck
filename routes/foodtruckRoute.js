@@ -10,6 +10,6 @@ var auth = require('../authentication/basicAuth');
 
 router.get('/',auth.basicAuth, ftController.findAllFoodTrucks);
 
-router.put('/',auth.basicAuth,ftController.updateFoodTruck);
+router.post('/',auth.basicAuth,ftController.updateFoodTruck);
 
 module.exports = router;

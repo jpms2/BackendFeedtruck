@@ -33,7 +33,7 @@ module.exports = {
 
     },
     validateUserLogin : function(username, password, done){
-
+            console.log({username: username.valueOf(),password: password.valueOf()});
             User.findOne({ 'email' : username.valueOf(), 'password': password.valueOf()}, function(err,user){
                 if(user === undefined)
                     done(null, false);

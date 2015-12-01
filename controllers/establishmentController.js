@@ -75,7 +75,7 @@ module.exports = {
         Establishment.findOne({'email':req.user.email},{_id:0, userId:0,__v:0},function(err,user){
             if(err) console.error(err);
             var result = {logged: user, type: 'Establishment'};
-            res.send(result);
+            res.status(200).json(result);
         })
     }
 };
